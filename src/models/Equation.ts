@@ -40,7 +40,6 @@ export class Equation {
 			}
 			
 		}
-		console.log(solution[0].toString())
 		solution = this.simplifyRoots(solution)
 
 		return solution
@@ -125,7 +124,6 @@ export class Equation {
 				coeffs.push(0)
 			}
 		}
-		console.log(coeffs, this.maxPow)
 		return coeffs
 	}
 
