@@ -16,17 +16,19 @@ export class Simplifyer {
 			return node
 		})
 
-		console.log(root.toString())
 
 		const [transformed, sqrtExps] = this.replace(root);
+		const rules = [
+			...simplify.rules, 
+			'-(n1 + n2) -> -n1 - n2',
+		]
 
-		let simplified = simplify(transformed);
-		console.log(transformed.toString())
+		let simplified = simplify(transformed, rules);
 
 		simplified = this.revReplace(simplified, sqrtExps)
 
+		return simplified
 
-		console.log(simplified.toString())
 	}	
 	private static checkPeriodic(fract: any): boolean{
 		let m = fract.d;

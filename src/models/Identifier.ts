@@ -1,7 +1,9 @@
-
+import {simplify} from 'mathjs'
 
 export class Identifier{
 	public static preIdent(node: any){
+		//node = simplify(node)
+
 		if(!this.checkPoly(node)){
 			if(node.op === '*'){
 				return 'multipl'
@@ -18,7 +20,7 @@ export class Identifier{
 
 	public static postIdent(node: any){
 		if(node.op === '/'){
-			return 'fraction'
+			return 'rational'
 		}
 		let pOP = this.checkMaxPow(node, 1); //powOfPolynom
 		
@@ -67,6 +69,6 @@ export class Identifier{
 }
 
 
-// types: multipl(произведение двух выражений), fraction(рациональное уравнение), pow(взведение в степень), 
+// types: multipl(произведение двух выражений), rational(рациональное уравнение), pow(взведение в степень), 
 // lineal(линейное), quadratic(квадратное), cubic(кубическое), 
 // fourPow(четвертая степень) powNPolynom(уравнение выше четвертой степени)

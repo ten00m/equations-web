@@ -1,10 +1,11 @@
 import {Parser} from './utils/Parser'
-import {simplify, rationalize, Node, OperatorNode, parse, fraction} from 'mathjs'
+import {simplify, rationalize, Node, OperatorNode, parse, fraction, ConstantNode} from 'mathjs'
 import {Identifier} from './Identifier'
 import {Lineal} from './equations/Lineal'
 import {Quadratic} from './equations/Quadratic'
+import {Multi} from './equations/Multi'
+import {Rational} from './equations/Rational'
 import {Simplifyer} from './utils/Simplifyer'
-
 
 
 export class Equation {
@@ -19,28 +20,46 @@ export class Equation {
 
 	}
 
-	public solve(): Array<number>{
+	public solve(): Array<any>{
 		const preKind = Identifier.preIdent(this.equatTree);
 		let solution: Array<any> = []
 		let coeffs: Array<number> = []
 
-		if(preKind === 'multipl'){
+		if((
+			this.equatTree?.op === '*' 
+			&& this.equatTree.args[0].isConstantNode 
+			&& this.equatTree.args[1].isSymbolNode
+			)
+			|| this.equatTree.isSymbolNode
+		){
+			solution.push(new ConstantNode(0))
+		} else {
 
-		} else {	
-			const tree = this.simple();
-			const postKind = Identifier.postIdent(tree);	
-			coeffs = this.getCoeffs(tree); 
-
-			switch(postKind){
-				case 'lineal':
-					solution = this.getLineal(coeffs);
-					break;
-				case 'quadratic':
-					solution = this.getQuadratic(coeffs)
-			}
-			
+			if(preKind === 'multipl'){
+				solution = this.getMulti()
+			} else {	
+				const tree = this.simple();
+				const postKind = Identifier.postIdent(tree);	
+				coeffs = this.getCoeffs(tree); 
+	
+				switch(postKind){
+					case 'lineal':
+						solution = this.getLineal(coeffs);
+						break;
+					case 'quadratic':
+						solution = this.getQuadratic(coeffs);
+						break;
+					case 'rational':
+						solution = this.getRational()
+				}
+				
+			}			
 		}
-		solution = this.simplifyRoots(solution)
+
+
+		solution = this.simplifyRoots(solution);
+
+		console.log(solution)
 
 		return solution
 	}
@@ -144,5 +163,21 @@ export class Equation {
 		}
 
 		return solutions
+	}
+
+	private getMulti(): Array<any> {
+		const multiEq = new Multi(this.equatTree)
+
+		return multiEq.solutions
+	}
+
+	private getRational(): Array<any>{
+		const ratEq = new Rational(this.equatTree)
+
+		return ratEq.solutions
+	}
+
+	public static isEquation(tree: any): boolean{
+		return true
 	}
 }

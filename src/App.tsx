@@ -7,6 +7,8 @@ import {Parser} from './models/utils/Parser'
 function App() {
   	let [equationInp, setEquationInp] = useState('');
   	let [parsedTexEq, setParsedTexEq] = useState('');
+  	let [parsedTexSol, setParsedTexSol] = useState('');
+  	let [solution, setSolution] = useState<Array<any>>([])
   	let parser = new Parser()
 
   	useMemo(() => {
@@ -16,7 +18,12 @@ function App() {
 
   	function solve(): void{
   		const equation = new Equation(equationInp);
-  		const solution = equation.solve();
+  		const sol = equation.solve();
+  		if(!sol[0]){
+  			sol.push('none')
+  		}
+  		setSolution(sol)
+
   	}
 
   	return (
@@ -35,6 +42,13 @@ function App() {
     			equationInp
     	 		?  	<MathComponent tex={parsedTexEq} />
     			:	<div></div>
+    		}
+    		{
+    			solution[0] !== 'none'
+    			? solution.map((s, n) => 
+    				<MathComponent tex={`x_${n + 1} = ${parser.parseTex(s.toString())}`} key={n}/>
+    			)
+    			: <MathComponent tex={String.raw`x\in\emptyset`} />
     		}				
     	</div>
   	);
