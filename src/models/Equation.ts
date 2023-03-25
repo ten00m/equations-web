@@ -5,6 +5,7 @@ import {Lineal} from './equations/Lineal'
 import {Quadratic} from './equations/Quadratic'
 import {Multi} from './equations/Multi'
 import {Rational} from './equations/Rational'
+import {CubicEq} from './equations/CubicEq'
 import {Simplifyer} from './utils/Simplifyer'
 
 
@@ -24,6 +25,7 @@ export class Equation {
 		const preKind = Identifier.preIdent(this.equatTree);
 		let solution: Array<any> = []
 		let coeffs: Array<number> = []
+		console.log(preKind)
 
 		if((
 			this.equatTree?.op === '*' 
@@ -41,7 +43,6 @@ export class Equation {
 				const tree = this.simple();
 				const postKind = Identifier.postIdent(tree);	
 				coeffs = this.getCoeffs(tree); 
-	
 				switch(postKind){
 					case 'lineal':
 						solution = this.getLineal(coeffs);
@@ -50,7 +51,10 @@ export class Equation {
 						solution = this.getQuadratic(coeffs);
 						break;
 					case 'rational':
-						solution = this.getRational()
+						solution = this.getRational();
+						break;
+					case 'cubic':
+						solution = this.getCubic(coeffs, tree)
 				}
 				
 			}			
@@ -175,6 +179,12 @@ export class Equation {
 		const ratEq = new Rational(this.equatTree)
 
 		return ratEq.solutions
+	}
+
+	private getCubic(coeffs: Array<number>, tree: any): Array<any>{
+		const CubEq = new CubicEq(coeffs, tree);
+
+		return CubEq.solutions
 	}
 
 	public static isEquation(tree: any): boolean{

@@ -11,7 +11,6 @@ export class Multi {
 	}
 
 	solve(): any{
-		console.log('!!')
 		const tree = this.tree
 		let solutions: any = []
 
@@ -22,6 +21,7 @@ export class Multi {
 				solutions = [...solutions, ...underEq.solve()]
 			}
 		}
+		console.log(solutions)
 
 		return solutions
 	}
