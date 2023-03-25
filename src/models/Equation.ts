@@ -6,6 +6,7 @@ import {Quadratic} from './equations/Quadratic'
 import {Multi} from './equations/Multi'
 import {Rational} from './equations/Rational'
 import {CubicEq} from './equations/CubicEq'
+import {FourPowEq} from './equations/FourPowEq'
 import {Simplifyer} from './utils/Simplifyer'
 
 
@@ -25,7 +26,6 @@ export class Equation {
 		const preKind = Identifier.preIdent(this.equatTree);
 		let solution: Array<any> = []
 		let coeffs: Array<number> = []
-		console.log(preKind)
 
 		if((
 			this.equatTree?.op === '*' 
@@ -54,7 +54,11 @@ export class Equation {
 						solution = this.getRational();
 						break;
 					case 'cubic':
-						solution = this.getCubic(coeffs, tree)
+						solution = this.getCubic(coeffs, tree);
+						break;
+					case 'fourPow':
+						solution = this.getFourPowEq(coeffs, tree);
+						break
 				}
 				
 			}			
@@ -62,8 +66,6 @@ export class Equation {
 
 
 		solution = this.simplifyRoots(solution);
-
-		console.log(solution)
 
 		return solution
 	}
@@ -143,7 +145,7 @@ export class Equation {
 					if(coeff) coeffs.push(coeff)
 				}
 			})
-			if(coeffs.length != i + 1){
+			if(coeffs.length !== i + 1){
 				coeffs.push(0)
 			}
 		}
@@ -185,6 +187,12 @@ export class Equation {
 		const CubEq = new CubicEq(coeffs, tree);
 
 		return CubEq.solutions
+	}
+
+	private getFourPowEq(coeffs: Array<number>, tree: any){
+		const FourPowEqObj = new FourPowEq(coeffs, tree);
+
+		return FourPowEqObj.solutions
 	}
 
 	public static isEquation(tree: any): boolean{

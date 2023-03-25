@@ -1,4 +1,4 @@
-import {RationalTheoremEq} from './RationalTheoremEq'
+import {RationalTheoremEq} from './methods/RationalTheoremEq'
 
 export class CubicEq{
 	coeffs: Array<number>
@@ -13,7 +13,7 @@ export class CubicEq{
 
 	private solve(): Array<any>{
 		let eq = new RationalTheoremEq(this.coeffs, this.tree);
-		if(eq.solutions){
+		if(eq.solutions.length === 3){
 			return eq.solutions
 		}
 		console.log(eq.solutions)

@@ -7,7 +7,6 @@ import {Parser} from './models/utils/Parser'
 function App() {
   	let [equationInp, setEquationInp] = useState('');
   	let [parsedTexEq, setParsedTexEq] = useState('');
-  	let [parsedTexSol, setParsedTexSol] = useState('');
   	let [solution, setSolution] = useState<Array<any>>([])
   	let parser = new Parser()
 
