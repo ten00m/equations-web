@@ -7,6 +7,7 @@ import {Multi} from './equations/Multi'
 import {Rational} from './equations/Rational'
 import {CubicEq} from './equations/CubicEq'
 import {FourPowEq} from './equations/FourPowEq'
+import { PowNEq } from './equations/PowNEq'
 import {Simplifyer} from './utils/Simplifyer'
 
 
@@ -58,7 +59,9 @@ export class Equation {
 						break;
 					case 'fourPow':
 						solution = this.getFourPowEq(coeffs, tree);
-						break
+						break;
+					case 'powNPolynom':
+						solution = this.getPowNEq(coeffs, tree)
 				}
 				
 			}			
@@ -190,9 +193,15 @@ export class Equation {
 	}
 
 	private getFourPowEq(coeffs: Array<number>, tree: any){
-		const FourPowEqObj = new FourPowEq(coeffs, tree);
+		const fourPowEq = new FourPowEq(coeffs, tree);
 
-		return FourPowEqObj.solutions
+		return fourPowEq.solutions
+	}
+
+	private getPowNEq(coeffs: Array<number>, tree: any){
+		const powNEq = new PowNEq(coeffs, tree);
+
+		return powNEq.solutions
 	}
 
 	public static isEquation(tree: any): boolean{

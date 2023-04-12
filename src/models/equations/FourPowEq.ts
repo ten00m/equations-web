@@ -1,4 +1,5 @@
 import { RationalTheoremEq } from "./methods/RationalTheoremEq";
+import { fFerrari } from "./methods/fFerrari";
 
 export class FourPowEq{
     coeffs: Array<number>;
@@ -16,7 +17,10 @@ export class FourPowEq{
 		if(eq.solutions.length === 4){
 			return eq.solutions
 		}
-		console.log(eq.solutions)
-		return []
+        else {
+            let fFer = new fFerrari(this.coeffs)
+            return fFer.solutions
+        }
+		
     }
 }
