@@ -11,7 +11,10 @@ function App() {
   	let parser = new Parser()
 
   	useMemo(() => {
-  			setParsedTexEq(parser.parseTex(equationInp))
+  			setParsedTexEq(parser.parseTex(equationInp));
+			if(solution){
+				setSolution([])
+			}
   		}, [equationInp]
   	)
 

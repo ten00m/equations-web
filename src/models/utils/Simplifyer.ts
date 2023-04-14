@@ -6,6 +6,12 @@ export class Simplifyer {
 	public static evaluate(root: any){
 		root = root.transform((node: any) => {
 			if(node?.name === 'sqrt' && node.isFunctionNode){
+				if(node.args[0].op === '/'){
+					const [p, q] = node.args[0].args;
+					const numerator = this.evaluate(parse(`sqrt(${p})`));
+					const denominator = this.evaluate(parse(`sqrt(${q})`));
+					return parse(`${numerator}/${denominator}`)
+				}
 				const expr = rationalize(node.args[0])
 				const sqrt = parse(`sqrt(${expr})`)
 				if(this.checkIrrational(sqrt)){
@@ -21,6 +27,7 @@ export class Simplifyer {
 		const rules = [
 			...simplify.rules, 
 			'-(n1 + n2) -> -n1 - n2',
+			'n1/n3 + n2/n3 -> (n1 + n2)/n3'
 		]
 
 		let simplified = simplify(transformed, rules);

@@ -18,7 +18,8 @@ export class FourPowEq{
 			return eq.solutions
 		}
         else {
-            let fFer = new fFerrari(this.coeffs)
+            let fFer = new fFerrari(this.coeffs);
+
             return fFer.solutions
         }
 		

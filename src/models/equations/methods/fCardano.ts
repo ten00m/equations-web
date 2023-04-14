@@ -1,4 +1,4 @@
-import {parse, atan, evaluate} from 'mathjs'
+import {parse, evaluate} from 'mathjs'
 
 
 export class fCardano{
