@@ -22,16 +22,19 @@ export class fFerrari{
         const r = -(3*a**4/256) + (a**2*b/16) - c*a/4 + d;
         
         if(q !== 0){
-            const resolvent = `2x^3 - (${p}*x^2) - (2*${r}*x) + ${r*p} - ((${q})^2/4) = 0`
+            const resolvent = `2x^3 - (${p}*x^2) - (2*${r}*x) + ${r*p} - ((${q})^2/4) = 0`;
             const resEq = new Equation(resolvent);
             const resSol = resEq.solve();
     
             let s: number = 0;
     
             for(let root of resSol){
-                root = parse(Number(root.toString()).toFixed(10).toString())
+                const isLastRoot = resSol.indexOf(root) === resSol.length - 1;
+
+                root = parse(Number(root.toString()).toFixed(10).toString());
+
                 if(Math.abs(Number(root.toString()))*1000000 % 1 === 0 
-                    || (resSol.indexOf(root) === resSol.length - 1 && !s)){
+                    || (isLastRoot && !s)){
                     s = Number(root.toString())
                 }
             }
@@ -43,7 +46,9 @@ export class fFerrari{
             const quadratic = new Equation(`x^2 + ${p}*x + ${r} = 0`);
             const sols = quadratic.solve();
             for(let r of sols){
-                tRoots.push(parse(`sqrt(${r.toString()})`), parse(`-sqrt(${r.toString()})`))
+                if(r.evaluate() >= 0){
+                    tRoots.push(parse(`sqrt(${r.toString()})`), parse(`-sqrt(${r.toString()})`))
+                } 
             }
         }
 

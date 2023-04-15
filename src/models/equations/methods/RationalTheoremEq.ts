@@ -19,12 +19,14 @@ export class RationalTheoremEq {
 		
 		const numerators = this.getDividers(freeMember)
 		const denominators = this.getDividers(highMember);
-
+		const symb: string = this.tree.toString().includes('x') ? 'x'
+		: this.tree.toString().includes('t') ? 't'
+		: 's'
 		for(let num of numerators){
 			for(let denom of denominators){
 				const root = simplify(parse(`${num}/${denom}`));
-				const evRoot = root.evaluate()
-				if(simplify(this.tree, {x: root}).toString() === '0' && !evSol.includes(evRoot)){
+				const evRoot = root.evaluate();
+				if(simplify(this.tree, {[symb]: root}).toString() === '0' && !evSol.includes(evRoot)){
 					solutions.push(root);
 					evSol.push(root.evaluate())
 				}

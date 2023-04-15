@@ -15,7 +15,6 @@ export class Lineal {
 		const [a, b] = this.coeffs.reverse()
         let ans = parse(`-${b} / ${a}`);
         answers.push(ans)
-
 		return answers
 	} 
 }

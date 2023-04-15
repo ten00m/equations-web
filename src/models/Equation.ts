@@ -24,9 +24,15 @@ export class Equation {
 	}
 
 	public solve(): Array<any>{
+		const parser = new Parser();
+
 		const preKind = Identifier.preIdent(this.equatTree);
-		let solution: Array<any> = []
-		let coeffs: Array<number> = []
+		let solution: Array<any> = [];
+		let coeffs: Array<number> = [];
+
+		const stepByStep:Array<any> = [
+			{'prev': this.equatTree.toTex() + '= 0'},
+		];
 
 		if((
 			this.equatTree?.op === '*' 
@@ -39,38 +45,45 @@ export class Equation {
 		} else {
 
 			if(preKind === 'multipl'){
-				solution = this.getMulti()
+				solution = this.getMulti(stepByStep)
 			} else {	
 				const tree = this.simple();
+
+				stepByStep.push({'simlpledTex': tree.toTex()})
 				const postKind = Identifier.postIdent(tree);	
 				coeffs = this.getCoeffs(tree); 
 				switch(postKind){
 					case 'lineal':
-						solution = this.getLineal(coeffs);
+						solution = this.getLineal(coeffs, stepByStep);
 						break;
 					case 'quadratic':
-						solution = this.getQuadratic(coeffs);
+						solution = this.getQuadratic(coeffs, stepByStep);
 						break;
 					case 'rational':
-						solution = this.getRational();
+						solution = this.getRational(stepByStep);
 						break;
 					case 'cubic':
-						solution = this.getCubic(coeffs, tree);
+						solution = this.getCubic(coeffs, tree, stepByStep);
 						break;
 					case 'fourPow':
-						solution = this.getFourPowEq(coeffs, tree);
+						solution = this.getFourPowEq(coeffs, tree, stepByStep);
 						break;
 					case 'powNPolynom':
-						solution = this.getPowNEq(coeffs, tree)
+						solution = this.getPowNEq(coeffs, tree, stepByStep)
 				}
 				
 			}			
 		}
 
-
 		solution = this.simplifyRoots(solution);
 
-		return solution
+		if(solution.length === 0){
+			stepByStep.splice(0)
+		}
+
+		console.log(stepByStep)
+
+		return [solution, stepByStep]
 	}
 
 	private simple(): any {
@@ -155,13 +168,15 @@ export class Equation {
 		return coeffs
 	}
 
-	private getLineal(coeffs: Array<number>){
+	private getLineal(coeffs: Array<number>, stepByStep: Array<any>){
 		let linealEq = new Lineal(coeffs);
+		stepByStep.push({'lineal': this.equatTree.toTex() + '= 0'});
 		return linealEq.solutions
 	}
 
-	private getQuadratic(coeffs: Array<number>){
+	private getQuadratic(coeffs: Array<number>, stepByStep: Array<any>){
 		let quadraticEq = new Quadratic(coeffs);
+		stepByStep.push({'quad': this.equatTree.toTex() + '= 0'})
 		return quadraticEq.solutions
 	}
 
@@ -174,31 +189,31 @@ export class Equation {
 		return solutions
 	}
 
-	private getMulti(): Array<any> {
+	private getMulti(stepByStep: Array<any>): Array<any> {
 		const multiEq = new Multi(this.equatTree)
 
 		return multiEq.solutions
 	}
 
-	private getRational(): Array<any>{
+	private getRational(stepByStep: Array<any>): Array<any>{
 		const ratEq = new Rational(this.equatTree)
 
 		return ratEq.solutions
 	}
 
-	private getCubic(coeffs: Array<number>, tree: any): Array<any>{
+	private getCubic(coeffs: Array<number>, tree: any, stepByStep: Array<any>): Array<any>{
 		const CubEq = new CubicEq(coeffs, tree);
 
 		return CubEq.solutions
 	}
 
-	private getFourPowEq(coeffs: Array<number>, tree: any){
+	private getFourPowEq(coeffs: Array<number>, tree: any, stepByStep: Array<any>){
 		const fourPowEq = new FourPowEq(coeffs, tree);
 
 		return fourPowEq.solutions
 	}
 
-	private getPowNEq(coeffs: Array<number>, tree: any){
+	private getPowNEq(coeffs: Array<number>, tree: any, stepByStep: Array<any>){
 		const powNEq = new PowNEq(coeffs, tree);
 
 		return powNEq.solutions

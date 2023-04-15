@@ -1,17 +1,23 @@
 import React,{useState, useMemo} from 'react';
 import './App.css';
 import {Equation} from './models/Equation'
-import {MathComponent} from 'mathjax-react'
 import {Parser} from './models/utils/Parser'
+import LiveInp from './components/liveinp/LiveInp'
+import LatexOut from './components/latexout/LatexOut';
+import EquatInp from './components/equatInp/EquatInp';
+import Header from './components/header/Header'
 
 function App() {
-  	let [equationInp, setEquationInp] = useState('');
+  	let [equationInp, setEquationInp] = useState('Enter your equation');
   	let [parsedTexEq, setParsedTexEq] = useState('');
   	let [solution, setSolution] = useState<Array<any>>([])
   	let parser = new Parser()
 
   	useMemo(() => {
-  			setParsedTexEq(parser.parseTex(equationInp));
+			const parsed = parser.parseTex(equationInp)
+  			if(parsed){
+				setParsedTexEq(parsed)
+			}
 			if(solution){
 				setSolution([])
 			}
@@ -20,7 +26,7 @@ function App() {
 
   	function solve(): void{
   		const equation = new Equation(equationInp);
-  		const sol = equation.solve();
+  		const [sol, stBySt] = equation.solve();
   		if(!sol[0]){
   			sol.push('none')
   		}
@@ -28,30 +34,20 @@ function App() {
 
   	}
 
+	function getParsedSol(s: any){
+		return parser.parseTex(s.toString())
+	}
+
   	return (
     	<div className="App">
-    		<input 
-				type="text" 
-				value={equationInp} 
-				onChange={(e): void => {setEquationInp(e.target.value)}}
-    		/>
-    		<button
-				onClick={solve}
-    		>
-				Решить
-    		</button>
-    		{
-    			equationInp
-    	 		?  	<MathComponent tex={parsedTexEq} />
-    			:	<div></div>
-    		}
-    		{
-    			solution[0] !== 'none'
-    			? solution.map((s, n) => 
-    				<MathComponent tex={`x_${n + 1} = ${parser.parseTex(s.toString())}`} key={n}/>
-    			)
-    			: <MathComponent tex={String.raw`x\in\emptyset`} />
-    		}				
+			<div className="wrapper">
+				<Header/>
+				<EquatInp solve={solve} setEquationInp={setEquationInp} equatStr={equationInp}/>
+				<div className="out">
+					<LiveInp equatStr={equationInp} parsedTexEq={parsedTexEq}/>
+					<LatexOut getParsedSol={getParsedSol} solution={solution}/>
+				</div>	
+			</div>
     	</div>
   	);
 }

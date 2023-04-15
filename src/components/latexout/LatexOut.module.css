@@ -1,0 +1,12 @@
+.rootCont{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 20px auto;
+    color: #fff;
+    width: 70%;
+    max-height: 300px;
+    background-color: #474747;
+    font-size: 20px;
+    align-items: center;
+}
