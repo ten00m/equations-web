@@ -6,11 +6,13 @@ import LiveInp from './components/liveinp/LiveInp'
 import LatexOut from './components/latexout/LatexOut';
 import EquatInp from './components/equatInp/EquatInp';
 import Header from './components/header/Header'
+import StepByStep from './components/stepByStep/SteByStep';
 
 function App() {
   	let [equationInp, setEquationInp] = useState('Enter your equation');
   	let [parsedTexEq, setParsedTexEq] = useState('');
-  	let [solution, setSolution] = useState<Array<any>>([])
+  	let [solution, setSolution] = useState<Array<any>>([]);
+	let [step, setStep] = useState<Array<any>>([])
   	let parser = new Parser()
 
   	useMemo(() => {
@@ -20,6 +22,7 @@ function App() {
 			}
 			if(solution){
 				setSolution([])
+				setStep([])
 			}
   		}, [equationInp]
   	)
@@ -27,6 +30,8 @@ function App() {
   	function solve(): void{
   		const equation = new Equation(equationInp);
   		const [sol, stBySt] = equation.solve();
+
+		setStep(stBySt)
   		if(!sol[0]){
   			sol.push('none')
   		}
@@ -46,6 +51,7 @@ function App() {
 				<div className="out">
 					<LiveInp equatStr={equationInp} parsedTexEq={parsedTexEq}/>
 					<LatexOut getParsedSol={getParsedSol} solution={solution}/>
+					<StepByStep stepArr={step} solutions={solution} getParsedSol={getParsedSol}/>
 				</div>	
 			</div>
     	</div>

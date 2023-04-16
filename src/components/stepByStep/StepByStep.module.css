@@ -1,12 +1,17 @@
-.rootCont{
+.cont{
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin: 20px auto;
     color: #fff;
     min-width: 70%;
-    max-height: 100%;
+    max-width: 70%;
     background-color: #474747;
     font-size: 20px;
     align-items: center;
+}
+.element{
+    overflow-x: auto;
+    min-width: 100%;
+    max-width: 100%;
 }

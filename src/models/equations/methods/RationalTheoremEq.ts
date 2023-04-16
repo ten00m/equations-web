@@ -3,15 +3,24 @@ import {parse, simplify} from 'mathjs'
 export class RationalTheoremEq {
 	coeffs: Array<number>;
 	tree: any;
+	symb: string;
 	solutions: Array<any>;
+	stepByStep: Array<any>
 
-	constructor(coeffs: Array<number>, tree: any){
+	constructor(coeffs: Array<number>, tree: any, stepByStep: Array<any>, symb: string){
 		this.coeffs = coeffs
-		this.tree = tree
+		this.tree = tree;
+		this.symb = symb
+		this.stepByStep = stepByStep
 		this.solutions = this.solve()
 	}
 
 	private solve(){
+		this.stepByStep.push([
+			"Подбираем корни с помощью теоремы о рациональных корнях",
+			""
+		])
+
 		const solutions: Array<any> = [];
 		const evSol: Array<number> = []
 		const freeMember = this.coeffs[0];
@@ -19,15 +28,23 @@ export class RationalTheoremEq {
 		
 		const numerators = this.getDividers(freeMember)
 		const denominators = this.getDividers(highMember);
-		const symb: string = this.tree.toString().includes('x') ? 'x'
-		: this.tree.toString().includes('t') ? 't'
-		: 's'
+
+
+		
 		for(let num of numerators){
 			for(let denom of denominators){
+
 				const root = simplify(parse(`${num}/${denom}`));
 				const evRoot = root.evaluate();
-				if(simplify(this.tree, {[symb]: root}).toString() === '0' && !evSol.includes(evRoot)){
+
+				if(simplify(this.tree, {[this.symb]: root}).toString() === '0' && !evSol.includes(evRoot)){
 					solutions.push(root);
+
+					this.stepByStep.push([
+						"",
+						`${this.symb} = ${root.toTex()}`
+					])
+
 					evSol.push(root.evaluate())
 				}
 			}
@@ -43,8 +60,7 @@ export class RationalTheoremEq {
 
 		for(let i = 1; i <= number; i++){
 			if(number % i === 0){
-				dividers.push(i);
-				dividers.push(-i)
+				dividers.push(i, -i);
 			}
 		}
 

@@ -31,7 +31,10 @@ export class Equation {
 		let coeffs: Array<number> = [];
 
 		const stepByStep:Array<any> = [
-			{'prev': this.equatTree.toTex() + '= 0'},
+			[
+				"Переносим все из правой части уравнения в левую",
+				this.equatTree.toTex() + '= 0',
+			],
 		];
 
 		if((
@@ -49,7 +52,11 @@ export class Equation {
 			} else {	
 				const tree = this.simple();
 
-				stepByStep.push({'simlpledTex': tree.toTex()})
+				stepByStep.push([
+					"Раскрываем скобки, приводим подобные слагаемые",
+					tree.toTex() + '= 0'
+				]);
+
 				const postKind = Identifier.postIdent(tree);	
 				coeffs = this.getCoeffs(tree); 
 				switch(postKind){
@@ -57,10 +64,10 @@ export class Equation {
 						solution = this.getLineal(coeffs, stepByStep);
 						break;
 					case 'quadratic':
-						solution = this.getQuadratic(coeffs, stepByStep);
+						solution = this.getQuadratic(coeffs, stepByStep, tree);
 						break;
 					case 'rational':
-						solution = this.getRational(stepByStep);
+						solution = this.getRational(stepByStep, tree);
 						break;
 					case 'cubic':
 						solution = this.getCubic(coeffs, tree, stepByStep);
@@ -76,12 +83,6 @@ export class Equation {
 		}
 
 		solution = this.simplifyRoots(solution);
-
-		if(solution.length === 0){
-			stepByStep.splice(0)
-		}
-
-		console.log(stepByStep)
 
 		return [solution, stepByStep]
 	}
@@ -169,14 +170,12 @@ export class Equation {
 	}
 
 	private getLineal(coeffs: Array<number>, stepByStep: Array<any>){
-		let linealEq = new Lineal(coeffs);
-		stepByStep.push({'lineal': this.equatTree.toTex() + '= 0'});
+		let linealEq = new Lineal(coeffs, stepByStep);
 		return linealEq.solutions
 	}
 
-	private getQuadratic(coeffs: Array<number>, stepByStep: Array<any>){
-		let quadraticEq = new Quadratic(coeffs);
-		stepByStep.push({'quad': this.equatTree.toTex() + '= 0'})
+	private getQuadratic(coeffs: Array<number>, stepByStep: Array<any>, tree:any){
+		let quadraticEq = new Quadratic(coeffs, stepByStep, tree);
 		return quadraticEq.solutions
 	}
 
@@ -190,31 +189,31 @@ export class Equation {
 	}
 
 	private getMulti(stepByStep: Array<any>): Array<any> {
-		const multiEq = new Multi(this.equatTree)
+		const multiEq = new Multi(this.equatTree, stepByStep)
 
 		return multiEq.solutions
 	}
 
-	private getRational(stepByStep: Array<any>): Array<any>{
-		const ratEq = new Rational(this.equatTree)
+	private getRational(stepByStep: Array<any>, tree: any): Array<any>{
+		const ratEq = new Rational(tree, stepByStep)
 
 		return ratEq.solutions
 	}
 
 	private getCubic(coeffs: Array<number>, tree: any, stepByStep: Array<any>): Array<any>{
-		const CubEq = new CubicEq(coeffs, tree);
+		const CubEq = new CubicEq(coeffs, tree, stepByStep);
 
 		return CubEq.solutions
 	}
 
 	private getFourPowEq(coeffs: Array<number>, tree: any, stepByStep: Array<any>){
-		const fourPowEq = new FourPowEq(coeffs, tree);
+		const fourPowEq = new FourPowEq(coeffs, tree, stepByStep);
 
 		return fourPowEq.solutions
 	}
 
 	private getPowNEq(coeffs: Array<number>, tree: any, stepByStep: Array<any>){
-		const powNEq = new PowNEq(coeffs, tree);
+		const powNEq = new PowNEq(coeffs, tree, stepByStep);
 
 		return powNEq.solutions
 	}

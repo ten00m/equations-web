@@ -1,12 +1,14 @@
 import {Equation} from '../../Equation'
-import {parse} from 'mathjs'
+import {parse, simplify} from 'mathjs'
 
 export class fFerrari{
     coeffs: Array<number>;
     solutions: Array<any>;
+    stepByStep: Array<any>
 
-    constructor(coeffs: Array<number>){
-        this.coeffs = coeffs
+    constructor(coeffs: Array<number>, steByStep: Array<any>){
+        this.coeffs = coeffs;
+        this.stepByStep = steByStep
         this.solutions = this.solve()
     }
 
@@ -17,42 +19,122 @@ export class fFerrari{
         const roots: Array<any> = []
         const tRoots: Array<any> = []
         
-        const p = b - 3*a**2/8;
-        const q = a**3/8 - (a*b/2) + c;
-        const r = -(3*a**4/256) + (a**2*b/16) - c*a/4 + d;
+        const pParsed = parse(`${b - 3*a**2/8}`)
+        const qParsed = parse(`${a**3/8 - (a*b/2) + c}`);
+        const rParsed = parse(`${-(3*a**4/256) + (a**2*b/16) - c*a/4 + d}`);
+        const [p, q, r] = [pParsed.evaluate(), qParsed.evaluate(), rParsed.evaluate()]
+
+        this.stepByStep.push([
+            "Количество корней меньше четырех, возможны иррациональные корни",
+            ""
+        ], [
+            "Разделим уравнение на старший коэффициент и получим",
+            "x^4 + ax^3 + bx^2 + cx + d = 0"
+        ], [
+            "где",
+            `a = ${a}`
+        ], [
+            "",
+            `b = ${b}`
+        ], [
+            "",
+            `c = ${c}`
+        ], [
+            "",
+            `d = ${d}`
+        ], [
+            "Приведем уравнение к виду",
+            "u^4 + pu^2 + qu + r = 0"
+        ], [
+            "При помощи замены",
+            String.raw`x = u - \frac{a}{4}`
+        ], [
+            'Получим',
+            `u^4 + ${simplify(pParsed).toTex()}u^2 + ${simplify(qParsed).toTex()}u + ${simplify(rParsed).toTex()} = 0`
+        ])
         
         if(q !== 0){
-            const resolvent = `2x^3 - (${p}*x^2) - (2*${r}*x) + ${r*p} - ((${q})^2/4) = 0`;
+            const resolvent = `2s^3 - (${p}*s^2) - (2*${r}*s) + ${r*p} - ((${q})^2/4) = 0`;
             const resEq = new Equation(resolvent);
-            const resSol = resEq.solve();
+
+            const [resSol, resStep] = resEq.solve();
+
+            this.stepByStep.push([
+                "Решим кубическую резольвенту уравнения 4-ой степени:",
+                resEq.equatTree.toTex() + " = 0"
+            ], ...resStep)
     
             let s: number = 0;
     
             for(let root of resSol){
                 const isLastRoot = resSol.indexOf(root) === resSol.length - 1;
 
-                root = parse(Number(root.toString()).toFixed(10).toString());
+                root = parse(Number(root.evaluate().toString()).toFixed(10).toString());
 
-                if(Math.abs(Number(root.toString()))*1000000 % 1 === 0 
+                if(Math.abs(Number(root.toString()))*1000000000 % 1 === 0 
                     || (isLastRoot && !s)){
-                    s = Number(root.toString())
+                    s = Number(root.evaluate())
                 }
             }
+            const eq = new Equation(`(u^2 + u*sqrt(${2*s - p}) - ${q}/(2*sqrt(${2*s - p})) + ${s})(u^2 - u*sqrt(${2*s - p}) + ${q}/(2*sqrt(${2*s - p})) + ${s}) = 0`);
+
+            const [eqSol, eqStep] = eq.solve();
+
+            this.stepByStep.push([
+                "Выберем значение корня кубической резольвенты и подставим в эквивалентное уравнение",
+                String.raw`\displaylines{
+                (u^2 - u\sqrt{2s - p} + \frac{q}{2\sqrt{2s - p}} + s)*\\\
+                *(u^2 + u\sqrt{2s - p} - \frac{q}{2\sqrt{2s - p}} + s) = 0
+                }`
+            ], [
+                "Получим",
+                eq.equatTree.toTex() + " = 0"
+            ], ...eqStep)
             
-            const quadratic_1 = new Equation(`x^2 + x*sqrt(${2*s - p}) - ${q}/(2*sqrt(${2*s - p})) + ${s} = 0`)
-            const quadratic_2 = new Equation(`x^2 - x*sqrt(${2*s - p}) + ${q}/(2*sqrt(${2*s - p})) + ${s} = 0`)
-            tRoots.push(...quadratic_1.solve(), ...quadratic_2.solve());
+            tRoots.push(...eqSol);
         } else {
-            const quadratic = new Equation(`x^2 + ${p}*x + ${r} = 0`);
-            const sols = quadratic.solve();
-            for(let r of sols){
+
+            const quadratic = new Equation(`t^2 + ${p}*t + ${r} = 0`);
+            const [qSols, qSteps] = quadratic.solve();
+
+            this.stepByStep.push([
+                "Заменим",
+                "u^2 = t"
+            ], ...qSteps)
+
+            for(let r of qSols){
+                this.stepByStep.push([
+                    "Обратная замена",
+                    String.raw`\displaylines{
+                        u^2 = ${r.toTex()}
+                    }`
+                ])           
+
                 if(r.evaluate() >= 0){
                     tRoots.push(parse(`sqrt(${r.toString()})`), parse(`-sqrt(${r.toString()})`))
-                } 
+
+                    this.stepByStep.push([
+                        "",
+                        String.raw`
+                            u = \sqrt[2]{${r.toTex()}}
+                        `
+                    ])
+                } else{
+                    this.stepByStep.push([
+                        "Уравнение",
+                        `u^2 = t, \\\ t< 0`
+                    ], ["Не имеет вещественных"])
+                }
             }
         }
+        roots.push(...tRoots.map((r, n) => {
+            this.stepByStep.push([
+                "Обратная замена",
+                String.raw`x_${n} = u - \frac{a}{4} = ${r.toTex()} - ${a}/4`
+            ])
 
-        roots.push(...tRoots.map(r => parse(`${r} - ${a}/4`)));
+            return  parse(`${r} - ${a}/4`)
+        }));
         
 
 

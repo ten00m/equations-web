@@ -11,6 +11,9 @@ const LatexOut: FC<LatexProps> = ({solution, getParsedSol}) => {
 
     return (
         <div className={classes.rootCont}>
+			<h3 className={solution.length ? "" : "hidden"}>
+				Корни уравнения
+			</h3>
     		{
     			solution[0] !== 'none'
     			? solution.map((s, n) => 
