@@ -5,7 +5,12 @@ const Header = () => {
 
     return (
         <div className={classes.header}>
-            EqCalc
+            <div className={classes.header_log}>
+                EqCalc
+            </div>
+            <div className={classes.header_name}>
+                Калькулятор математических уравнений
+            </div>
         </div>
     )
 }

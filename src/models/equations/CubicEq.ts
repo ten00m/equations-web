@@ -47,7 +47,6 @@ export class CubicEq{
 				for(let r of fCard.solutions){
 
 					for(let i of evalSol){
-						console.log(r.toString())
 						if(!evalSol.includes(r.evaluate().toFixed(12))){
 							solutions.push(r)
 						}

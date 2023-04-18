@@ -1,7 +1,19 @@
-.header {
+.header_log {
     text-align: left;
     font-size: 60px;
     color: #a6a6a6;
-    background-color: #1c1c1c;
     padding: 10px 0;
+}
+.header{
+    display: flex;
+    justify-content: space-between;
+    background-color: #1c1c1c;
+    padding: 5px 20px;
+    vertical-align: bottom;
+}
+.header_name{
+    font-size: 20px;
+    color: #a6a6a6;
+    vertical-align: bottom;
+    margin-top: 5%
 }

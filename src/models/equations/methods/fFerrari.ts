@@ -57,7 +57,7 @@ export class fFerrari{
             const resolvent = `2s^3 - (${p}*s^2) - (2*${r}*s) + ${r*p} - ((${q})^2/4) = 0`;
             const resEq = new Equation(resolvent);
 
-            const [resSol, resStep] = resEq.solve();
+            let [resSol, resStep] = resEq.solve();
 
             this.stepByStep.push([
                 "Решим кубическую резольвенту уравнения 4-ой степени:",
@@ -65,6 +65,8 @@ export class fFerrari{
             ], ...resStep)
     
             let s: number = 0;
+
+            resSol = resSol.filter((r: any) => r.evaluate() >=0)
     
             for(let root of resSol){
                 const isLastRoot = resSol.indexOf(root) === resSol.length - 1;
@@ -86,6 +88,9 @@ export class fFerrari{
                 (u^2 - u\sqrt{2s - p} + \frac{q}{2\sqrt{2s - p}} + s)*\\\
                 *(u^2 + u\sqrt{2s - p} - \frac{q}{2\sqrt{2s - p}} + s) = 0
                 }`
+            ], [
+                "Где",
+                `s = ${s}`
             ], [
                 "Получим",
                 eq.equatTree.toTex() + " = 0"
@@ -116,7 +121,7 @@ export class fFerrari{
                     this.stepByStep.push([
                         "",
                         String.raw`
-                            u = \sqrt[2]{${r.toTex()}}
+                            u_{1, 2} = \pm \sqrt[2]{${r.toTex()}}
                         `
                     ])
                 } else{
@@ -130,7 +135,7 @@ export class fFerrari{
         roots.push(...tRoots.map((r, n) => {
             this.stepByStep.push([
                 "Обратная замена",
-                String.raw`x_${n} = u - \frac{a}{4} = ${r.toTex()} - ${a}/4`
+                String.raw`x_${n + 1} = u - \frac{a}{4} = ${r.toTex()} - ${a}/4`
             ])
 
             return  parse(`${r} - ${a}/4`)

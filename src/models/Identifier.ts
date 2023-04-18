@@ -1,8 +1,8 @@
-import {simplify} from 'mathjs'
+import {simplify, rationalize} from 'mathjs'
 
 export class Identifier{
 	public static preIdent(node: any){
-		//node = simplify(node)
+		//node = simplify(node);
 
 		if(!this.checkPoly(node)){
 			if(node.op === '*'){
@@ -15,6 +15,15 @@ export class Identifier{
 				return 'pow'
 			}
 		}
+		// node = simplify(node);
+		try{
+			if((node?.op === '-' || node?.op === '+')
+			&& rationalize(node?.args[1]).type === 'ConstantNode' 
+			&& node?.args[0].op === '^'
+		){
+			return 'powToNum'
+		}
+		} catch {}
 		return 'None'
 	}
 
@@ -71,4 +80,4 @@ export class Identifier{
 
 // types: multipl(произведение двух выражений), rational(рациональное уравнение), pow(взведение в степень), 
 // lineal(линейное), quadratic(квадратное), cubic(кубическое), 
-// fourPow(четвертая степень) powNPolynom(уравнение выше четвертой степени)
+// fourPow(четвертая степень) powNPolynom(уравнение выше четвертой степени), powToNum( f(x)^n = a)

@@ -1,0 +1,74 @@
+.keyboard_cont.hidden{
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    right: 20%;
+    
+}
+.keyboard_cont{
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    right: 5%;
+    
+}
+.keyboard{
+    width: 300px;
+    height: 270px;
+    display: flex;
+    border: 2px solid #a6a6a6;
+    flex-wrap: wrap;
+    padding: 0;
+}
+.keyboard.hidden{
+    display: none;
+}
+.keyb_icon{
+    user-select: none;
+    width: 53px;
+    background-color: #b8b8b8;
+    border-radius: 12%;
+    text-align: center;
+    margin: 0 0 0 auto;
+}
+.keyb_icon img{
+    width: 50px;
+}
+
+.key{
+    flex: 1  1 19%;
+    flex-grow: 1;
+    text-align: center;
+    color:white;
+    background-color: #414141;
+    border: 1px solid #a6a6a6;
+    list-style-type: none;
+}
+.key.big{
+    flex: 2 0 auto;
+}
+
+@media screen and (max-width: 1090px) {
+    .keyb_icon{
+        width: 130px;
+        height: 110px;
+    }
+    .keyb_icon img{
+        width: 120px;
+    }
+    .keyboard_cont{
+        right: 2%;
+        width: 96%;
+        max-height: 35%;
+        margin-bottom: 1vh;
+    }
+    .keyboard{
+        width: 100%;
+        height: 100%;
+    }
+    .key{
+        font-size: 40px;
+    }
+}

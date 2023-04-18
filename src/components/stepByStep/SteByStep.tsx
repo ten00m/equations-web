@@ -40,13 +40,15 @@ const StepByStep: FC<StepByStepProps> = ({stepArr, solutions, getParsedSol}) => 
                 <h3 className={stepArr.length ? "": "hidden"}>
                     Полученные корни
                 </h3>
-    		{
+            <div className={classes.element}>
+            {
     			solutions[0] !== 'none'
     			? solutions.map((s, n) => 
     				<MathComponent tex={`x_${n + 1} = ${getParsedSol(s)}`} key={n}/>
     			)
     			: <MathComponent tex={String.raw`x\in\emptyset`} />
     		}
+            </div>
         </div>
     )
 }

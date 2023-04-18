@@ -4,10 +4,11 @@ import classes from './EquatInp.module.css'
 interface EquationInpProps{
     equatStr: string,
     solve: () => void;
-    setEquationInp: (inp: string) => void
+    setEquationInp: (inp: string) => void;
+	isKeyb: boolean
 }
 
-const EquatInp: FC<EquationInpProps> = ({equatStr, setEquationInp, solve}) => {
+const EquatInp: FC<EquationInpProps> = ({equatStr, setEquationInp, solve, isKeyb}) => {
 
 
     return(
@@ -17,6 +18,7 @@ const EquatInp: FC<EquationInpProps> = ({equatStr, setEquationInp, solve}) => {
 				value={equatStr} 
 				onChange={(e): void => {setEquationInp(e.target.value)}}
                 className={classes.inp}
+				readOnly = {isKeyb}
     		/>
     		<button
 				onClick={solve}

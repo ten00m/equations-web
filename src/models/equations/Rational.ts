@@ -37,7 +37,7 @@ export class Rational{
 		for(let i = 1; i <= AOVsolut[0].length; i++){
 			this.stepByStep.push([
 				"",
-				String.raw`x_{${i}} \neq ${AOVsolut[0][i-1]}`
+				String.raw`x_{${i}} \neq ${AOVsolut[0][i-1].toTex()}`
 			])
 		}
 

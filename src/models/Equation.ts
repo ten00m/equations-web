@@ -9,6 +9,7 @@ import {CubicEq} from './equations/CubicEq'
 import {FourPowEq} from './equations/FourPowEq'
 import { PowNEq } from './equations/PowNEq'
 import {Simplifyer} from './utils/Simplifyer'
+import {PowToNumEq} from './equations/PowToNumEq'
 
 
 export class Equation {
@@ -37,6 +38,7 @@ export class Equation {
 			],
 		];
 
+
 		if((
 			this.equatTree?.op === '*' 
 			&& this.equatTree.args[0].isConstantNode 
@@ -49,8 +51,12 @@ export class Equation {
 
 			if(preKind === 'multipl'){
 				solution = this.getMulti(stepByStep)
+			} else if(preKind === 'fraction'){
+				solution = this.getRational(stepByStep, this.equatTree)
+			} else if(preKind === 'pow' || preKind === 'powToNum'){
+				solution = this.getPowToNumEq(this.equatTree, stepByStep)
 			} else {	
-				const tree = this.simple();
+				const tree = this.simple(this.equatTree);
 
 				stepByStep.push([
 					"Раскрываем скобки, приводим подобные слагаемые",
@@ -87,9 +93,15 @@ export class Equation {
 		return [solution, stepByStep]
 	}
 
-	private simple(): any {
-		let tree = this.equatTree.cloneDeep();
-		tree = rationalize(tree);
+	private simple(equatTree: any): any {
+		let tree = equatTree.cloneDeep()
+		try{
+			tree = rationalize(tree);
+		}catch(Error){
+			tree.args[0] = this.simple(tree.args[0]);
+			tree.args[1] = this.simple(tree.args[1]);
+			tree = this.simple(tree);
+		}
 		return tree
 	}
 
@@ -154,9 +166,9 @@ export class Equation {
 					node?.args[0].type === 'SymbolNode' &&
 					node?.args[1].value === i
 				){
-					if((parent.op === '-' && parent.args[1] === node) || parent.fn === 'unaryMinus'){
+					if((parent?.op === '-' && parent.args[1] === node) || parent?.fn === 'unaryMinus'){
 						coeff = -1
-					} else if(parent.op === '+' || parent.args[0] === node){
+					} else if(parent?.op === '+' || parent?.args[0] === node){
 						coeff = 1
 					}
 					if(coeff) coeffs.push(coeff)
@@ -218,7 +230,14 @@ export class Equation {
 		return powNEq.solutions
 	}
 
+	private getPowToNumEq(tree: any, stepByStep: Array<any>){
+		const powToNumEq = new PowToNumEq(tree, stepByStep);
+
+		return powToNumEq.solutions
+	}
+
 	public static isEquation(tree: any): boolean{
-		return true
+		const eqStr = tree.toString();
+		return /[xtus]/.test(eqStr)
 	}
 }

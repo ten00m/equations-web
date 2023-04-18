@@ -4,14 +4,21 @@
     justify-content: center;
     margin: 20px auto;
     color: #fff;
-    min-width: 70%;
-    max-width: 70%;
+    width: 70%;
     background-color: #474747;
     font-size: 20px;
     align-items: center;
 }
 .element{
     overflow-x: auto;
-    min-width: 100%;
-    max-width: 100%;
+    width: 100%;
+}
+
+@media screen and (max-width: 1090px) {
+    .cont{
+        width: 96%;
+    }
+    .element{
+        font-size: 34px;
+    }
 }
