@@ -1,5 +1,5 @@
 import {Parser} from './utils/Parser'
-import {simplify, rationalize, Node, OperatorNode, parse, fraction, ConstantNode} from 'mathjs'
+import {simplify, rationalize, OperatorNode, evaluate, ConstantNode} from 'mathjs'
 import {Identifier} from './Identifier'
 import {Lineal} from './equations/Lineal'
 import {Quadratic} from './equations/Quadratic'
@@ -36,9 +36,7 @@ export class Equation {
 				"Переносим все из правой части уравнения в левую",
 				this.equatTree.toTex() + '= 0',
 			],
-		];
-
-
+		];	
 		if((
 			this.equatTree?.op === '*' 
 			&& this.equatTree.args[0].isConstantNode 
@@ -47,6 +45,13 @@ export class Equation {
 			|| this.equatTree.isSymbolNode
 		){
 			solution.push(new ConstantNode(0))
+		} else if(this.equatTree.type === 'ParenthesisNode'){
+			const neqEq = new Equation(this.equatTree.content.toString() + ' = 0')
+			const sol = neqEq.solve();
+
+			stepByStep.splice(0);
+			stepByStep.push(...sol[1]);
+			solution = sol[0];
 		} else {
 
 			if(preKind === 'multipl'){
@@ -63,27 +68,35 @@ export class Equation {
 					tree.toTex() + '= 0'
 				]);
 
-				const postKind = Identifier.postIdent(tree);	
-				coeffs = this.getCoeffs(tree); 
-				switch(postKind){
-					case 'lineal':
-						solution = this.getLineal(coeffs, stepByStep);
+				if(tree.type === 'SymbolNode'){
+					
+					solution = [new ConstantNode(0)]
+				} else {
+
+					const postKind = Identifier.postIdent(tree);	
+					coeffs = this.getCoeffs(tree); 
+					switch(postKind){
+						case 'lineal':
+							solution = this.getLineal(coeffs, stepByStep);
+							break;
+						case 'quadratic':
+							solution = this.getQuadratic(coeffs, stepByStep, tree);
+							break;
+						case 'rational':
+							solution = this.getRational(stepByStep, tree);
 						break;
-					case 'quadratic':
-						solution = this.getQuadratic(coeffs, stepByStep, tree);
-						break;
-					case 'rational':
-						solution = this.getRational(stepByStep, tree);
-						break;
-					case 'cubic':
-						solution = this.getCubic(coeffs, tree, stepByStep);
-						break;
-					case 'fourPow':
-						solution = this.getFourPowEq(coeffs, tree, stepByStep);
-						break;
-					case 'powNPolynom':
-						solution = this.getPowNEq(coeffs, tree, stepByStep)
+						case 'cubic':
+							solution = this.getCubic(coeffs, tree, stepByStep);
+							break;
+						case 'fourPow':
+							solution = this.getFourPowEq(coeffs, tree, stepByStep);
+							break;
+						case 'powNPolynom':
+							solution = this.getPowNEq(coeffs, tree, stepByStep)
+					}
 				}
+
+				
 				
 			}			
 		}
@@ -119,7 +132,7 @@ export class Equation {
 							parent?.op === '-'
 						)
 					){	
-						if(parent.op === '-'){
+						if(parent?.op === '-'){
 							coeffs.push(-node.value)
 						} 
 						else {
@@ -130,7 +143,7 @@ export class Equation {
 				else if(i === 1){
 					if(node?.op === '*' && node?.args[1].type === 'SymbolNode'){
 						
-						if(parent.op === '-' && parent.args[1] === node){
+						if(parent?.op === '-' && parent?.args[1] === node){
 							coeff = -node.args[0].value
 						} else {
 							coeff = node.args[0].value
@@ -138,7 +151,7 @@ export class Equation {
 						coeffs.push(coeff);
 					}
 					if(node.type === 'SymbolNode'){
-						if((parent?.op === '-' && parent.args[1] === node) || (parent?.fn === 'unaryMinus')){
+						if((parent?.op === '-' && parent?.args[1] === node) || (parent?.fn === 'unaryMinus')){
 							coeff = -1
 						} else if((parent?.op === '+') ||( parent?.op === '-' && parent?.args[0] === node)){
 							coeff = 1
@@ -154,7 +167,7 @@ export class Equation {
 					node?.args[1]?.args[0].type === 'SymbolNode' &&
 					node?.args[1]?.args[1].value === i   
 				){
-					if((parent.op === '-' && parent.args[1] === node) || parent.fn === 'unaryMinus'){
+					if((parent?.op === '-' && parent?.args[1] === node) || parent.fn === 'unaryMinus'){
 						coeff = -node.args[0].value
 					} else {
 						coeff = node.args[0].value

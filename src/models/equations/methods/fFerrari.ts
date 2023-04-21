@@ -28,20 +28,11 @@ export class fFerrari{
             "Количество корней меньше четырех, возможны иррациональные корни",
             ""
         ], [
-            "Разделим уравнение на старший коэффициент и получим",
+            "Поделим уравнение на старший коэффициент и получим",
             "x^4 + ax^3 + bx^2 + cx + d = 0"
         ], [
             "где",
-            `a = ${a}`
-        ], [
-            "",
-            `b = ${b}`
-        ], [
-            "",
-            `c = ${c}`
-        ], [
-            "",
-            `d = ${d}`
+            String.raw`a = ${a},\\\ b = ${b}, \\\ c = ${c}, \\\ d = ${d}`
         ], [
             "Приведем уравнение к виду",
             "u^4 + pu^2 + qu + r = 0"
@@ -64,10 +55,12 @@ export class fFerrari{
                 resEq.equatTree.toTex() + " = 0"
             ], ...resStep)
     
-            let s: number = 0;
+            let s: number | undefined = undefined;
 
-            resSol = resSol.filter((r: any) => r.evaluate() >=0)
-    
+            resSol = resSol.filter((r: any) => {
+                return 2*r.evaluate() - p >=0
+            });
+            console.log(resSol)
             for(let root of resSol){
                 const isLastRoot = resSol.indexOf(root) === resSol.length - 1;
 
@@ -78,25 +71,34 @@ export class fFerrari{
                     s = Number(root.evaluate())
                 }
             }
-            const eq = new Equation(`(u^2 + u*sqrt(${2*s - p}) - ${q}/(2*sqrt(${2*s - p})) + ${s})(u^2 - u*sqrt(${2*s - p}) + ${q}/(2*sqrt(${2*s - p})) + ${s}) = 0`);
+            if(s === undefined){
+                this.stepByStep.push([
+                    'Корни кубичской резольвенты, такие что',
+                    String.raw`\sqrt{2s - p} \text{ - вещественное число, отсутствуют}`
+                ], [
+                    'Вещественных корней нет'
+                ])
+            }else {
+                const eq = new Equation(`(u^2 + u*sqrt(${2*s - p}) - ${q}/(2*sqrt(${2*s - p})) + ${s})(u^2 - u*sqrt(${2*s - p}) + ${q}/(2*sqrt(${2*s - p})) + ${s}) = 0`);
 
-            const [eqSol, eqStep] = eq.solve();
+                const [eqSol, eqStep] = eq.solve();
 
-            this.stepByStep.push([
-                "Выберем значение корня кубической резольвенты и подставим в эквивалентное уравнение",
-                String.raw`\displaylines{
-                (u^2 - u\sqrt{2s - p} + \frac{q}{2\sqrt{2s - p}} + s)*\\\
-                *(u^2 + u\sqrt{2s - p} - \frac{q}{2\sqrt{2s - p}} + s) = 0
-                }`
-            ], [
-                "Где",
-                `s = ${s}`
-            ], [
-                "Получим",
-                eq.equatTree.toTex() + " = 0"
-            ], ...eqStep)
+                this.stepByStep.push([
+                    "  Выберем значение корня кубической резольвенты и подставим в эквивалентное уравнение",
+                    String.raw`\displaylines{
+                    (u^2 - u\sqrt{2s - p} + \frac{q}{2\sqrt{2s - p}} + s)*\\\
+                    *(u^2 + u\sqrt{2s - p} - \frac{q}{2\sqrt{2s - p}} + s) = 0
+                    }`
+                ], [
+                    "Где",
+                    `s = ${s}`
+                ], [
+                    "Получим",
+                 eq.equatTree.toTex() + " = 0"
+                ], ...eqStep)
             
-            tRoots.push(...eqSol);
+                tRoots.push(...eqSol);
+            }
         } else {
 
             const quadratic = new Equation(`t^2 + ${p}*t + ${r} = 0`);
@@ -135,7 +137,7 @@ export class fFerrari{
         roots.push(...tRoots.map((r, n) => {
             this.stepByStep.push([
                 "Обратная замена",
-                String.raw`x_${n + 1} = u - \frac{a}{4} = ${r.toTex()} - ${a}/4`
+                String.raw`x_${n + 1} = u - \frac{a}{4} = ${r.toTex()} - \frac{${a}}{4}`
             ])
 
             return  parse(`${r} - ${a}/4`)

@@ -56,8 +56,21 @@ export class PowToNumEq{
                 this.stebByStep.push(...solve[1]);
                 solution.push(...solve[0])
             }
-        }
+        } else {
+            const eqStr = this.tree.args[0].toString();
 
+            const eq = new Equation(`${eqStr} = 0`);
+            const [sol, stepByStep] = eq.solve();
+
+            this.stebByStep.push([
+                '',
+                String.raw`${eqStr} = \sqrt[n]{0}`
+            ],
+                ...stepByStep);
+
+            solution.push(...sol);
+        }
+        console.log(solution)
         return solution
     }
 }

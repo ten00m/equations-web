@@ -19,7 +19,7 @@ const LatexOut: FC<LatexProps> = ({solution, getParsedSol}) => {
     			? solution.map((s, n) => 
     				<MathComponent tex={`x_${n + 1} = ${getParsedSol(s)}`} key={n}/>
     			)
-    			: <MathComponent tex={String.raw`x\in\emptyset`} />
+    			: <p>Корни не найдены</p>
     		}	
         </div>
     )

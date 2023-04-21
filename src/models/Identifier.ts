@@ -15,7 +15,9 @@ export class Identifier{
 				return 'pow'
 			}
 		}
-		// node = simplify(node);
+		node = simplify(node, [
+			'n1 - (-n2) -> n1 + n2'
+		]);
 		try{
 			if((node?.op === '-' || node?.op === '+')
 			&& rationalize(node?.args[1]).type === 'ConstantNode' 

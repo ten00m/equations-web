@@ -60,7 +60,11 @@ function App() {
 
 			case String.raw`\leftarrow`:
 				setEquationInp(equationInp.slice(0, -1));
-				break
+				break;
+
+			case 'a^b':
+				setEquationInp(equationInp + '^');
+				break;
 
 			default:
 				setEquationInp(equationInp + key)
