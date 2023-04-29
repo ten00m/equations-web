@@ -12,7 +12,7 @@ const LiveInp: FC<inpProps> = ({equatStr, parsedTexEq}) => {
     return (
         <div className={classes.inpTex}>
 			{
-    			equatStr
+    			equatStr !== 'undefined'
     	 		?  	<MathComponent tex={parsedTexEq} />
     			:	<div></div>
     		}

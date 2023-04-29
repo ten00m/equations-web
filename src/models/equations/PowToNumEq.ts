@@ -29,7 +29,6 @@ export class PowToNumEq{
             ){
                 this.stebByStep.splice(0);
 
-                console.log(this.tree)
                 const eq = new Equation(rationalize(this.tree).toString() + ' = 0');
                 const solve = eq.solve();
 
@@ -48,7 +47,6 @@ export class PowToNumEq{
                     "Получим",
                     String.raw`${left.args[0].toTex()} = ${ev > 0 ? ev**(1/n) : -((-(ev))**(1/n))}`
                 ])
-                console.log(this.tree.toString())
                 const eq = new Equation(`${left.args[0].toString()} = ${ev > 0 ? ev**(1/n) : -((-(ev))**(1/n))}`);
                 
                 const solve = eq.solve();
@@ -70,7 +68,6 @@ export class PowToNumEq{
 
             solution.push(...sol);
         }
-        console.log(solution)
         return solution
     }
 }

@@ -51,7 +51,7 @@ body{
   margin: 0;
 }
 .out {
-  margin-top: 20px;
+  margin-top: 5px;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -76,12 +76,12 @@ body{
       width: 100%;
     }
     h3{
-      font-size: 35px;
+      font-size: 20px;
     }
     .out{
       width: 100%;
     }
     p{
-      font-size: 28px;
+      font-size: 18px;
     }
 }

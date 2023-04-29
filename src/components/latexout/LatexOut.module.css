@@ -9,11 +9,13 @@
     background-color: #474747;
     font-size: 20px;
     align-items: center;
+    overflow-x: auto;
 }
 
 @media screen and (max-width: 1090px) {
     .rootCont{
-        width: 96%;
-        font-size: 35px;
+        width: 92%;
+        font-size: 17px;
+        padding: 0 2%;
     }
 }

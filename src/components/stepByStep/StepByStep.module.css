@@ -16,9 +16,10 @@
 
 @media screen and (max-width: 1090px) {
     .cont{
-        width: 96%;
+        width: 92%;
+        padding: 0 2%;
     }
     .element{
-        font-size: 34px;
+        font-size: 20px;
     }
 }

@@ -37,7 +37,7 @@
     align-items: center;
 }
 
-@media screen and (max-width: 1300px) {
+@media screen and (max-width: 1500px) {
     .inp{
         width: 70%;
         font-size: 25px;
@@ -47,24 +47,25 @@
         height: 80%;
     }
     .container{
-        height: 70px;
+        height: 60px;
     }
 }
-@media screen and (max-width: 1090px) {
+@media screen and (max-width: 500px) {
     .container{
         width: 100%;
-        height: 240px;
+        height: 140px;
         justify-content: right;
     }
     .inp{
         height: 50%;
         width: 96%;
-        font-size: 45px;
-        margin-right: 2%;
+        font-size: 25px;
+        margin:auto;
     }
     .button{
         height: 50%;
-        margin: 10px 2% 0 0;
+        width: 98%;
+        margin: 10px auto;
         font-size: 40px;
     }
 }

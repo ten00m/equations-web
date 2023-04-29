@@ -6,7 +6,7 @@ const Header = () => {
     return (
         <div className={classes.header}>
             <div className={classes.header_log}>
-                EqCalc
+                Solver
             </div>
             <div className={classes.header_name}>
                 Калькулятор математических уравнений

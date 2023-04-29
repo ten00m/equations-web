@@ -42,14 +42,16 @@ export class Parser {
 
 
 	private toNull(equat: string): string{
-		equat = equat.replaceAll(' ', '') + ' ';
+		equat = equat.replaceAll(' ', '');
 		
 		const equalInd = equat.search('=');
-		if (equat[equalInd + 1] === '0'){
-			equat = `${equat.slice(0, equalInd)}`
+		if (equat[equalInd + 1] === '0' && !equat[equalInd + 2]){
+			equat = `${equat.slice(0, equalInd)}`;
 		} else {
-			equat = `${equat.slice(0, equalInd)}-(${equat.slice(equalInd + 1, -1)})`
+			equat = `${equat.slice(0, equalInd)}-(${equat.slice(equalInd + 1)})`
+			console.log(equat)
 		}
+
 		return equat;
 	}
 

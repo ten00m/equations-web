@@ -3,7 +3,6 @@ import {simplify, rationalize} from 'mathjs'
 export class Identifier{
 	public static preIdent(node: any){
 		//node = simplify(node);
-
 		if(!this.checkPoly(node)){
 			if(node.op === '*'){
 				return 'multipl'

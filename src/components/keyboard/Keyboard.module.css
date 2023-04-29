@@ -21,6 +21,7 @@
     border: 2px solid #a6a6a6;
     flex-wrap: wrap;
     padding: 0;
+    margin: auto;
     margin-top: 2px;
 }
 .keyboard.hidden{
@@ -53,25 +54,19 @@
     flex: 2 0 auto;
 }
 
-@media screen and (max-width: 1090px) {
-    .keyb_icon{
-        width: 130px;
-        height: 80px;
-    }
-    .keyb_icon img{
-        width: 120px;
-    }
+@media screen and (max-width: 500px) {
+
     .keyboard_cont{
-        right: 2%;
-        width: 96%;
-        max-height: 35%;
-        margin-bottom: 1vh;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-height: 60%;
     }
     .keyboard{
-        width: 100%;
+        width: 98%;
         height: 100%;
     }
     .key{
-        font-size: 40px;
+        font-size: 20px;
     }
 }
